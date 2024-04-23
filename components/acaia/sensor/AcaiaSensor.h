@@ -51,8 +51,8 @@ namespace esphome {
                 }
 
                 float avgFlow = calculateAvgFlow();
-                //ESP_LOGD(TAG, "Calculated flow: %.1f", avgFlow);
                 if (!std::isnan(avgFlow) && should_set(flow_, avgFlow, 0.1)) {
+                    ESP_LOGD(TAG, "Publishing flow: %.1f", avgFlow);
                     flow_->publish_state(avgFlow);
                 }
             }
@@ -74,9 +74,7 @@ namespace esphome {
                     float timeDiffS = ((float) (curr.timestamp - prev.timestamp)) / 1000000;
                     float weightDiff = curr.weight - prev.weight;
 
-                    ESP_LOGD(TAG, "Debug Flow: %.1f, WD: %.2f, TD: %.3f", weightDiff / timeDiffS, weightDiff, timeDiffS);
-
-                    if (fabs(weightDiff) < 20 && timeDiffS >= 0.25 && timeDiffS < 0.35) {
+                    if (fabs(weightDiff) < 20 && timeDiffS >= 0.50 && timeDiffS < 0.80) {
                         ESP_LOGD(TAG, "Pushing flow: %.1f, WD: %.2f, TD: %.3f", weightDiff / timeDiffS, weightDiff, timeDiffS);
                         flows.push_back(weightDiff / timeDiffS);
                     }
